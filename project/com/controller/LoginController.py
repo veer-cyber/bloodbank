@@ -12,7 +12,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 # import urllib.request
 
-import cv2
+# import cv2
 import face_recognition
 import numpy as np
 from flask import request, render_template, redirect, url_for, session
@@ -408,146 +408,146 @@ def adminResetPassword():
 
 # _______________________________________________________FR_____________________________________________________________
 
-@app.route("/admin/faceValidateLogin", methods=['POST', 'GET'])
-def adminFaceValidateLogin():
-    try:
-        loginVO = LoginVO()
-        loginDAO = LoginDAO()
+# @app.route("/admin/faceValidateLogin", methods=['POST', 'GET'])
+# def adminFaceValidateLogin():
+#     try:
+#         loginVO = LoginVO()
+#         loginDAO = LoginDAO()
 
-        # ____________________________________________FR_START___________________________________________________
+#         # ____________________________________________FR_START___________________________________________________
 
-        video_capture = cv2.VideoCapture(0)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        for filename in glob.glob(r"project\static\adminResources\face\*.jpg"):
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2")
-            appointment = face_recognition.load_image_file(filename)
-            print("########################################################")
-            face_encoding = face_recognition.face_encodings(appointment)[0]
+#         video_capture = cv2.VideoCapture(0)
+#         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+#         for filename in glob.glob(r"project\static\adminResources\face\*.jpg"):
+#             print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2")
+#             appointment = face_recognition.load_image_file(filename)
+#             print("########################################################")
+#             face_encoding = face_recognition.face_encodings(appointment)[0]
 
-            known_face_encodings = []
-            known_face_names = []
-            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-            known_face_encodings.append(face_encoding)
+#             known_face_encodings = []
+#             known_face_names = []
+#             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+#             known_face_encodings.append(face_encoding)
 
-            firstname = filename.replace(".jpg", "")
-            firstname = firstname.replace(r"project\static\adminResources\face", "")
-            firstname = firstname[1:]
+#             firstname = filename.replace(".jpg", "")
+#             firstname = firstname.replace(r"project\static\adminResources\face", "")
+#             firstname = firstname[1:]
 
-            print("1:" + firstname)
-            known_face_names.append(firstname)
+#             print("1:" + firstname)
+#             known_face_names.append(firstname)
 
-            face_locations = []
-            face_encodings = []
-            face_names = []
-            process_this_frame = True
+#             face_locations = []
+#             face_encodings = []
+#             face_names = []
+#             process_this_frame = True
 
-            while True:
-                name = "Unknown"
-                ret, frame = video_capture.read()
+#             while True:
+#                 name = "Unknown"
+#                 ret, frame = video_capture.read()
 
-                small_frame = cv.resize(frame, (0, 0), fx=0.25, fy=0.25)
+#                 small_frame = cv.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
-                rgb_small_frame = small_frame[:, :, ::-1]
+#                 rgb_small_frame = small_frame[:, :, ::-1]
 
-                if process_this_frame:
-                    face_locations = face_recognition.face_locations(rgb_small_frame)
-                    face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
+#                 if process_this_frame:
+#                     face_locations = face_recognition.face_locations(rgb_small_frame)
+#                     face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
-                    face_names = []
-                    for face_encoding in face_encodings:
-                        matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
-                        name = "Unknown"
+#                     face_names = []
+#                     for face_encoding in face_encodings:
+#                         matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+#                         name = "Unknown"
 
-                        face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
-                        best_match_index = np.argmin(face_distances)
-                        if matches[best_match_index]:
-                            name = known_face_names[best_match_index]
+#                         face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
+#                         best_match_index = np.argmin(face_distances)
+#                         if matches[best_match_index]:
+#                             name = known_face_names[best_match_index]
 
-                        face_names.append(name)
+#                         face_names.append(name)
 
-                process_this_frame = not process_this_frame
+#                 process_this_frame = not process_this_frame
 
-                for (top, right, bottom, left), name in zip(face_locations, face_names):
-                    top *= 4
-                    right *= 4
-                    bottom *= 4
-                    left *= 4
+#                 for (top, right, bottom, left), name in zip(face_locations, face_names):
+#                     top *= 4
+#                     right *= 4
+#                     bottom *= 4
+#                     left *= 4
 
-                    cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+#                     cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
-                    cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-                    font = cv.FONT_HERSHEY_DUPLEX
-                    cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+#                     cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+#                     font = cv.FONT_HERSHEY_DUPLEX
+#                     cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
-                cv2.imshow('Video', frame)
+#                 cv2.imshow('Video', frame)
 
-                if cv2.waitKey(1) and name == "Unknown":
-                    break
-                elif cv2.waitKey(1) and 0xFF == ord('q'):
-                    break
-                elif name != "Unknown":
-                    break
+#                 if cv2.waitKey(1) and name == "Unknown":
+#                     break
+#                 elif cv2.waitKey(1) and 0xFF == ord('q'):
+#                     break
+#                 elif name != "Unknown":
+#                     break
 
-            if name != "Unknown" or 0xFF == ord('q'):
-                break
-        print("NAME:" + name)
-        video_capture.release()
-        cv2.destroyAllWindows()
+#             if name != "Unknown" or 0xFF == ord('q'):
+#                 break
+#         print("NAME:" + name)
+#         video_capture.release()
+#         cv2.destroyAllWindows()
 
-        # ____________________________________________FR_CLOSE___________________________________________________
+#         # ____________________________________________FR_CLOSE___________________________________________________
 
-        loginVOList = loginDAO.faceValidateLogin(name)
+#         loginVOList = loginDAO.faceValidateLogin(name)
 
-        # loginVO.loginUsername = loginVOList.loginUsername
-        # loginVO.loginPassword = loginVOList.loginPassword
-        # # loginVO.loginStatus = "active"
-        #
-        # loginVOList = loginDAO.validateLogin(loginVO)
+#         # loginVO.loginUsername = loginVOList.loginUsername
+#         # loginVO.loginPassword = loginVOList.loginPassword
+#         # # loginVO.loginStatus = "active"
+#         #
+#         # loginVOList = loginDAO.validateLogin(loginVO)
 
-        loginDictList = [i.as_dict() for i in loginVOList]
+#         loginDictList = [i.as_dict() for i in loginVOList]
 
-        print(loginDictList)
+#         print(loginDictList)
 
-        lenLoginDictList = len(loginDictList)
+#         lenLoginDictList = len(loginDictList)
 
-        if lenLoginDictList == 0:
+#         if lenLoginDictList == 0:
 
-            msg = 'Face is Not matched'
+#             msg = 'Face is Not matched'
 
-            return render_template('user/login.html', error=msg)
+#             return render_template('user/login.html', error=msg)
 
-        elif loginDictList[0]['loginStatus'] == "inactive":
+#         elif loginDictList[0]['loginStatus'] == "inactive":
 
-            msg = "you are temporarily blocked by admin"
+#             msg = "you are temporarily blocked by admin"
 
-            return render_template('user/login.html', error=msg)
+#             return render_template('user/login.html', error=msg)
 
-        else:
+#         else:
 
-            for row1 in loginDictList:
+#             for row1 in loginDictList:
 
-                loginId = row1['loginId']
+#                 loginId = row1['loginId']
 
-                loginUsername = row1['loginUsername']
+#                 loginUsername = row1['loginUsername']
 
-                loginRole = row1['loginRole']
+#                 loginRole = row1['loginRole']
 
-                session['session_loginId'] = loginId
+#                 session['session_loginId'] = loginId
 
-                session['session_loginUsername'] = loginUsername
+#                 session['session_loginUsername'] = loginUsername
 
-                session['session_loginRole'] = loginRole
+#                 session['session_loginRole'] = loginRole
 
-                session.permanent = True
+#                 session.permanent = True
 
-                if loginRole == 'admin':
-                    return redirect(url_for('adminLoadDashboard'))
+#                 if loginRole == 'admin':
+#                     return redirect(url_for('adminLoadDashboard'))
 
-                elif loginRole == 'bloodbank':
-                    return redirect(url_for('bloodbankLoadDashboard'))
+#                 elif loginRole == 'bloodbank':
+#                     return redirect(url_for('bloodbankLoadDashboard'))
 
-                elif loginRole == 'user':
-                    return redirect(url_for('userLoadDashboard'))
+#                 elif loginRole == 'user':
+#                     return redirect(url_for('userLoadDashboard'))
 
-    except Exception as ex:
-        print(ex)
+#     except Exception as ex:
+#         print(ex)
