@@ -13,8 +13,8 @@ from PIL import ImageFont
 # import urllib.request
 
 # import cv2
-import face_recognition
-import numpy as np
+# import face_recognition
+# import numpy as np
 from flask import request, render_template, redirect, url_for, session
 
 from project import app
