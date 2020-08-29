@@ -12,7 +12,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 # import urllib.request
 
-import cv2 as cv
+import cv2
 import face_recognition
 import numpy as np
 from flask import request, render_template, redirect, url_for, session
@@ -416,7 +416,7 @@ def adminFaceValidateLogin():
 
         # ____________________________________________FR_START___________________________________________________
 
-        video_capture = cv.VideoCapture(0)
+        video_capture = cv2.VideoCapture(0)
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         for filename in glob.glob(r"project\static\adminResources\face\*.jpg"):
             print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2")
@@ -473,17 +473,17 @@ def adminFaceValidateLogin():
                     bottom *= 4
                     left *= 4
 
-                    cv.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+                    cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
-                    cv.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv.FILLED)
+                    cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
                     font = cv.FONT_HERSHEY_DUPLEX
-                    cv.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+                    cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
-                cv.imshow('Video', frame)
+                cv2.imshow('Video', frame)
 
-                if cv.waitKey(1) and name == "Unknown":
+                if cv2.waitKey(1) and name == "Unknown":
                     break
-                elif cv.waitKey(1) and 0xFF == ord('q'):
+                elif cv2.waitKey(1) and 0xFF == ord('q'):
                     break
                 elif name != "Unknown":
                     break
@@ -492,7 +492,7 @@ def adminFaceValidateLogin():
                 break
         print("NAME:" + name)
         video_capture.release()
-        cv.destroyAllWindows()
+        cv2.destroyAllWindows()
 
         # ____________________________________________FR_CLOSE___________________________________________________
 
